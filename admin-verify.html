@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+      * {
+        padding: 0;
+        margin: 0;
+        font-family: "Lato", sans-serif;
+      }
+
+      form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      form div {
+        width: 90%;
+      }
+
+      #message {
+        width: 100%;
+        padding: 10px;
+      }
+      #message h3 {
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+      .hide {
+        display: none;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #207384;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
+      }
+      input:focus,
+      button:focus {
+        outline: none;
+      }
+      @media screen and (max-width: 488px) {
+        .container {
+          width: 90% !important;
+        }
+        h2 {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body
+    style="
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #cccccc;
+    "
+  >
+    <div class="container" style="width: 40%; background: #fff; padding: 40px">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+        "
+      >
+        <div>
+          <a
+            href="#"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              text-decoration: none;
+              color: #2e2f32;
+            "
+            title="PsychInsights"
+          >
+            <img src="./img/logo.svg" alt="Psych-logo" />
+            <h2>PsychInsights</h2>
+          </a>
+        </div>
+
+        <div style="width: 100%">
+          <img src="./img/line.svg" alt="line" width="100%" />
+        </div>
+      </div>
+
+      <div
+        style="
+          height: 35vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 25px;
+        "
+      >
+        <img src="./img/checked.svg" alt="checked-icon" width="85px" />
+
+        <div id="message">
+          <div class="form-wrap hid">
+            <form class="">
+              <div>
+                <label style="margin-left: 10px" for="password">Password</label>
+                <br />
+                <input
+                  id="password"
+                  name="password"
+                  type="text"
+                  placeholder="Create a password"
+                  style="
+                    width: 100%;
+                    background: transparent;
+                    border: 2px solid #207384;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                  "
+                />
+              </div>
+
+              <div>
+                <label style="margin-left: 10px" for="password_confirmation"
+                  >Confirm Password</label
+                >
+                <br />
+                <input
+                  id="password_confirmation"
+                  name="password_confirmation"
+                  type="text"
+                  placeholder="Confirm password"
+                  style="
+                    width: 100%;
+                    background: transparent;
+                    border: 2px solid #207384;
+                    border-radius: 5px;
+                    padding: 5px 10px;
+                  "
+                />
+              </div>
+
+              <button class="submit-form">Proceed</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const BASE_URL = "https://backend-dev.psychinsightsapp.com/api";
+    const token = window.location.search.split("=")[1];
+    const formWrap = document.querySelector(".form-wrap");
+    const passwordInput = document.querySelector("#password");
+    const confirmPasswordInput = document.querySelector(
+      "#password_confirmation"
+    );
+    const submitForm = document.querySelector(".submit-form");
+    console.log();
+
+    // Handle token verification, if token is correct display the password form
+    async function verifyToken() {
+      const config = {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ token: token }),
+      };
+
+      const response = await fetch(
+        `${BASE_URL}/admin/by-token/${token}`,
+        config
+      );
+      const output = await response.json();
+      console.log("output " + output);
+
+      console.log("responce " + response);
+
+      if (response.ok) {
+        formWrap.classList.remove("hide");
+      } else {
+        var messageId = document.getElementById("message");
+        var message = "<h3>Oopsie!</h3>";
+        message += "<p>" + output.message + "</p>";
+        messageId.innerHTML = message;
+      }
+    }
+    verifyToken();
+
+    let formState = {
+      password: "",
+      password_confirmation: "",
+    };
+
+    // Handle inpute validation and call post request api ac click of proceed
+
+    const submit = (e) => {
+      e.preventDefault();
+      console.log(e.target);
+
+      formState.password = passwordInput.value;
+      formState.password_confirmation = confirmPasswordInput.value;
+      console.log(formState);
+
+      const formData = new FormData();
+      const payLoad = { ...formState };
+      console.log(formData);
+      console.log(payLoad);
+
+      Object.entries(payLoad).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          value.forEach((element) => {
+            formData.append(`${key}[]`, element);
+          });
+        } else {
+          formData.append(key, value);
+        }
+      });
+
+      if (passwordInput.value === confirmPasswordInput.value) {
+        activateAdmin(formData);
+      } else {
+        alert("Password does not match");
+      }
+    };
+
+    async function activateAdmin(formData) {
+      const config2 = {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        // body: JSON.stringify({ token: token }),
+        body: formData,
+      };
+      const response2 = await fetch(
+        `${BASE_URL}/admin/activate-account`,
+        config2
+      );
+
+      if (response2.ok) {
+        window.location.href = "/adminapplogin";
+      } else {
+        console.log("");
+      }
+    }
+
+    submitForm.addEventListener("click", submit);
+  </script>
+</html>

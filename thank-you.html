@@ -5,10 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thank you page</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
       * {
         padding: 0;
         margin: 0;
+        font-family: "Lato", sans-serif;
+      }
+
+      #message h3 {
+        font-weight: 700;
+        margin-bottom: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #207384;
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
       }
       @media screen and (max-width: 488px) {
         .container {
@@ -35,24 +58,30 @@
         style="
           display: flex;
           align-items: center;
-          justify-content: space-around;
+          justify-content: space-between;
+          gap: 20px;
         "
       >
-        <a
-          href="#"
-          style="
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            text-decoration: none;
-            color: #2e2f32;
-          "
-          title="PsychInsights"
-        >
-          <img src="./img/logo.svg" alt="Psych-logo" />
-          <h2>PsychInsights</h2>
-        </a>
-        <img src="./img/line.svg" alt="line" />
+        <div>
+          <a
+            href="#"
+            style="
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              text-decoration: none;
+              color: #2e2f32;
+            "
+            title="PsychInsights"
+          >
+            <img src="./img/logo.svg" alt="Psych-logo" />
+            <h2>PsychInsights</h2>
+          </a>
+        </div>
+
+        <div style="width: 100%">
+          <img src="./img/line.svg" alt="line" width="100%" />
+        </div>
       </div>
 
       <div
@@ -65,10 +94,46 @@
           gap: 25px;
         "
       >
-        <img src="./img/checked.svg" alt="checked-icon" width="100px" />
-        <h3>Verified!</h3>
-        <p>Thank you, you have successfully verified your account</p>
+        <img src="./img/checked.svg" alt="checked-icon" width="85px" />
+        <div id="message" style="text-align: center"></div>
+
+        <button>Proceed</button>
       </div>
     </div>
   </body>
+
+  <script>
+    const BASE_URL = "https://backend-dev.psychinsightsapp.com/api";
+    const token = window.location.search.split("=")[1];
+
+    async function verifyEmail(e) {
+      // e.preverntDefault();
+      const response = await fetch(`${BASE_URL}/verify-email`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ token: token }),
+      });
+      const output = await response.json();
+      console.log(output);
+
+      console.log(response);
+      if (response.ok) {
+        var messageId = document.getElementById("message");
+        var message = "<h3>Verified!</h3>";
+        message +=
+          "<p>Thank you, you have successfully verified your account</p>";
+        messageId.innerHTML = message;
+      } else {
+        var messageId = document.getElementById("message");
+        var message = "<h3>Oopsie!</h3>";
+        message += "<p>" + output.message + "</p>";
+        messageId.innerHTML = message;
+      }
+    }
+
+    verifyEmail();
+  </script>
 </html>

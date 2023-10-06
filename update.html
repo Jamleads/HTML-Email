@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -38,35 +38,7 @@
       @media screen and (max-width: 600px) {
       }
     </style>
-
-    <script>
-      const BASE_URL = "https://backend-dev.psychinsightsapp.com/api";
-      const token = window.location.search.split("=")[1];
-
-      async function verifyEmail(e) {
-        // e.preverntDefault();
-        const response = await fetch(`${BASE_URL}/verify-email`, {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({ token: token }),
-        });
-        const output = await response.json();
-        console.log(output);
-        if (response.ok) {
-          window.location.replace("./thank-you.html");
-        } else {
-          window.location.replace("./error.html");
-        }
-      }
-
-      const verifyBtn = document.querySelector(".verify-btn");
-
-      verifyBtn.addEventListener("click", verifyEmail);
-    </script>
   </head>
-  
   <body>
     <center class="wrapper">
       <table class="main" width="100%" style="padding: 30px">
@@ -74,73 +46,79 @@
           <td>
             <table width="100%">
               <tr>
-                <td>
-                  <div
+                <td style="text-align: center">
+                  <!-- <a
+                    href="#"
                     style="
                       display: flex;
                       align-items: center;
-                      justify-content: space-around;
+                      gap: 5px;
+                      text-decoration: none;
+                      color: #2e2f32;
                     "
+                    title="PsychInsights"
                   >
-                    <a
-                      href="#"
-                      style="
-                        display: flex;
-                        align-items: center;
-                        gap: 5px;
-                        text-decoration: none;
-                        color: #2e2f32;
-                      "
-                      title="PsychInsights"
-                    >
-                      <img
-                        src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/logo.svg"
-                        alt="Psych-logo"
-                      />
-                      <h2>PsychInsights</h2>
-                    </a>
                     <img
-                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/line.svg"
-                      alt="line"
+                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/logo+(1).png"
+                      alt="Psych-logo"
                     />
-                  </div>
+                    <h2>PsychInsights</h2>
+                  </a> -->
+
+                  <img
+                    src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/brand.png"
+                    alt="Psych-logo"
+                  />
                 </td>
               </tr>
             </table>
           </td>
         </tr>
 
+        <!-- hmmmm -->
+        <!-- <tr>
+          <td>
+            <table width="100%">
+              <tr>
+                <td style="text-align: center">
+                  <img
+                    src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/checked.png"
+                    alt="checked-icon"
+                    width="50px"
+                  />
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr> -->
+        <!-- hmmmm -->
+
         <tr>
           <td>
             <table width="100%">
               <tr>
                 <td>
-                  <div
+                  <p
                     style="
-                      display: flex;
+                      font-size: 40px;
+                      font-weight: 500;
                       text-align: center;
-                      align-items: center;
-                      gap: 10px;
-                      justify-content: center;
-                      color: #000000;
                     "
                   >
-                    <p
-                      style="
-                        font-size: 40px;
-                        font-weight: 500;
-                        text-align: center;
-                      "
-                    >
-                      Verify your email
-                    </p>
+                    Verify your email
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
 
-                    <img
-                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/checked.svg"
-                      alt="checked-icon"
-                      width="50px"
-                    />
-                  </div>
+        <!-- mmmmmm -->
+        <tr>
+          <td>
+            <table width="100%">
+              <tr>
+                <td>
                   <p
                     style="
                       text-align: center;
@@ -156,19 +134,21 @@
             </table>
           </td>
         </tr>
+        <!-- mmmmmm -->
 
         <tr>
           <td>
             <table width="100%">
               <tr>
                 <td style="font-size: 14px">
-                  <p style="margin: 40px 0px">Hello [User's First name],</p>
+                  <p style="margin: 40px 0px">Hello {{ $name }},</p>
                   <p style="margin-bottom: 40px">
                     Welcome to PsychInsights! We are dedicated to optimizing
                     your mental well-being for you to live a better life, and
                     we're excited to have you on board. Before you can fully
                     access our community, please verify your email address to
-                    ensure the security and authenticity of your account.
+                    ensure the security and authenticity of your account by
+                    entering this token on the Email Verification.
                   </p>
                 </td>
               </tr>
@@ -182,6 +162,7 @@
               <tr>
                 <td style="text-align: center">
                   <a
+                    href="{{ env('VERIFICATION_BASE') }}/thank-you.html?token={{ $token }}"
                     style="
                       color: #ffffff;
                       padding: 15px 55px;
@@ -189,7 +170,6 @@
                       border-radius: 30px;
                       text-decoration: none;
                     "
-                    class="verify-btn"
                     >Verify email</a
                   >
                 </td>
@@ -226,27 +206,26 @@
               <tr>
                 <td
                   style="
+                    text-align: center;
                     background-color: #f0f1f9;
                     border-radius: 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
                   "
                 >
                   <a href="#">
                     <img
-                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/Facebook.svg"
+                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/facebook.png"
                       alt="Facebook"
                     />
                   </a>
                   <a href="#" style="margin: 0px 15px">
                     <img
-                    src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/twitter.svg"
-                    alt=/twitter.svg" />
+                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/twitter.png"
+                      alt="twitter.svg"
+                    />
                   </a>
                   <a href="#">
                     <img
-                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/Facebook.svg"
+                      src="https://psychinsight-email-icons.s3.us-east-2.amazonaws.com/facebook.png"
                       alt="Facebook"
                     />
                   </a>
